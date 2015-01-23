@@ -92,7 +92,7 @@ public class BackgroundGpsPlugin extends CordovaPlugin {
             result = true;
             // TODO reconfigure Service
             callbackContext.success();
-        } else if (ACTION_PACE_CHANGE.equalsIgnoreCase(action)) {
+        } else if (ACTION_CHANGE_PACE.equalsIgnoreCase(action)) {
             result = true;
             callbackContext.success();
         }
