@@ -21,6 +21,7 @@ public class BackgroundGpsPlugin extends CordovaPlugin {
 	public static final String ACTION_CHANGE_PACE = "onPaceChange";
 
 	private Intent updateServiceIntent;
+	private Intent changePaceIntent;
 
 	private Boolean isEnabled = false;
 
