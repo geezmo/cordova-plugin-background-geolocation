@@ -185,56 +185,64 @@ public class LocationUpdateService extends Service implements LocationListener {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			url = intent.getStringExtra("url");
-			stationaryRadius = Float.parseFloat(intent
-					.getStringExtra("stationaryRadius"));
-			distanceFilter = Integer.parseInt(intent
-					.getStringExtra("distanceFilter"));
-			scaledDistanceFilter = distanceFilter;
-			desiredAccuracy = Integer.parseInt(intent
-					.getStringExtra("desiredAccuracy"));
-			locationTimeout = Integer.parseInt(intent
-					.getStringExtra("locationTimeout"));
-			isDebugging = Boolean.parseBoolean(intent
-					.getStringExtra("isDebugging"));
-			notificationTitle = intent.getStringExtra("notificationTitle");
-			notificationText = intent.getStringExtra("notificationText");
 
-			// Build a Notification required for running service in foreground.
-			Intent main = new Intent(this, BackgroundGpsPlugin.class);
-			main.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
-					| Intent.FLAG_ACTIVITY_SINGLE_TOP);
-			PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
-					main, PendingIntent.FLAG_UPDATE_CURRENT);
-
-			Notification.Builder builder = new Notification.Builder(this);
-			builder.setContentTitle(notificationTitle);
-			builder.setContentText(notificationText);
-			builder.setSmallIcon(android.R.drawable.ic_menu_mylocation);
-			builder.setContentIntent(pendingIntent);
-			Notification notification;
-			if (android.os.Build.VERSION.SDK_INT >= 16) {
-				notification = buildForegroundNotification(builder);
+			if (intent.getAction().equals("changePace")) {
+				this.setPace(Boolean.parseBoolean("isMoving"));
 			} else {
-				notification = buildForegroundNotificationCompat(builder);
-			}
-			notification.flags |= Notification.FLAG_ONGOING_EVENT
-					| Notification.FLAG_FOREGROUND_SERVICE
-					| Notification.FLAG_NO_CLEAR;
-			startForeground(startId, notification);
-		}
-		Log.i(TAG, "- url: " + url);
-		Log.i(TAG, "- params: " + params.toString());
-		Log.i(TAG, "- headers: " + headers.toString());
-		Log.i(TAG, "- stationaryRadius: " + stationaryRadius);
-		Log.i(TAG, "- distanceFilter: " + distanceFilter);
-		Log.i(TAG, "- desiredAccuracy: " + desiredAccuracy);
-		Log.i(TAG, "- locationTimeout: " + locationTimeout);
-		Log.i(TAG, "- isDebugging: " + isDebugging);
-		Log.i(TAG, "- notificationTitle: " + notificationTitle);
-		Log.i(TAG, "- notificationText: " + notificationText);
+				url = intent.getStringExtra("url");
+				stationaryRadius = Float.parseFloat(intent
+						.getStringExtra("stationaryRadius"));
+				distanceFilter = Integer.parseInt(intent
+						.getStringExtra("distanceFilter"));
+				scaledDistanceFilter = distanceFilter;
+				desiredAccuracy = Integer.parseInt(intent
+						.getStringExtra("desiredAccuracy"));
+				locationTimeout = Integer.parseInt(intent
+						.getStringExtra("locationTimeout"));
+				isDebugging = Boolean.parseBoolean(intent
+						.getStringExtra("isDebugging"));
+				notificationTitle = intent.getStringExtra("notificationTitle");
+				notificationText = intent.getStringExtra("notificationText");
 
-		this.setPace(false);
+				// Build a Notification required for running service in
+				// foreground.
+				Intent main = new Intent(this, BackgroundGpsPlugin.class);
+				main.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+						| Intent.FLAG_ACTIVITY_SINGLE_TOP);
+				PendingIntent pendingIntent = PendingIntent.getActivity(this,
+						0, main, PendingIntent.FLAG_UPDATE_CURRENT);
+
+				Notification.Builder builder = new Notification.Builder(this);
+				builder.setContentTitle(notificationTitle);
+				builder.setContentText(notificationText);
+				builder.setSmallIcon(android.R.drawable.ic_menu_mylocation);
+				builder.setContentIntent(pendingIntent);
+				Notification notification;
+				if (android.os.Build.VERSION.SDK_INT >= 16) {
+					notification = buildForegroundNotification(builder);
+				} else {
+					notification = buildForegroundNotificationCompat(builder);
+				}
+				notification.flags |= Notification.FLAG_ONGOING_EVENT
+						| Notification.FLAG_FOREGROUND_SERVICE
+						| Notification.FLAG_NO_CLEAR;
+				startForeground(startId, notification);
+
+				Log.i(TAG, "- url: " + url);
+				Log.i(TAG, "- params: " + params.toString());
+				Log.i(TAG, "- headers: " + headers.toString());
+				Log.i(TAG, "- stationaryRadius: " + stationaryRadius);
+				Log.i(TAG, "- distanceFilter: " + distanceFilter);
+				Log.i(TAG, "- desiredAccuracy: " + desiredAccuracy);
+				Log.i(TAG, "- locationTimeout: " + locationTimeout);
+				Log.i(TAG, "- isDebugging: " + isDebugging);
+				Log.i(TAG, "- notificationTitle: " + notificationTitle);
+				Log.i(TAG, "- notificationText: " + notificationText);
+
+				this.setPace(false);
+			}
+
+		}
 
 		// We want this service to continue running until it is explicitly
 		// stopped

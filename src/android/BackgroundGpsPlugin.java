@@ -12,31 +12,31 @@ import android.location.LocationManager;
 import android.util.Log;
 
 public class BackgroundGpsPlugin extends CordovaPlugin {
-    private static final String TAG = "BackgroundGpsPlugin";
+	private static final String TAG = "BackgroundGpsPlugin";
 
-    public static final String ACTION_START = "start";
-    public static final String ACTION_STOP = "stop";
-    public static final String ACTION_CONFIGURE = "configure";
-    public static final String ACTION_SET_CONFIG = "setConfig";
-    public static final String ACTION_CHANGE_PACE = "onPaceChange";
+	public static final String ACTION_START = "start";
+	public static final String ACTION_STOP = "stop";
+	public static final String ACTION_CONFIGURE = "configure";
+	public static final String ACTION_SET_CONFIG = "setConfig";
+	public static final String ACTION_CHANGE_PACE = "onPaceChange";
 
-    private Intent updateServiceIntent;
+	private Intent updateServiceIntent;
 
-    private Boolean isEnabled = false;
+	private Boolean isEnabled = false;
 
-    private String url;
-    private String params;
-    private String headers;
-    private String stationaryRadius = "30";
-    private String desiredAccuracy = "100";
-    private String distanceFilter = "30";
-    private String locationTimeout = "60";
-    private String isDebugging = "false";
-    private String notificationTitle = "Background tracking";
-    private String notificationText = "ENABLED";
-    private String stopOnTerminate = "false";
+	private String url;
+	private String params;
+	private String headers;
+	private String stationaryRadius = "30";
+	private String desiredAccuracy = "100";
+	private String distanceFilter = "30";
+	private String locationTimeout = "60";
+	private String isDebugging = "false";
+	private String notificationTitle = "Background tracking";
+	private String notificationText = "ENABLED";
+	private String stopOnTerminate = "false";
 
-    public boolean execute(String action, JSONArray data, CallbackContext callbackContext) {
+	public boolean execute(String action, JSONArray data, CallbackContext callbackContext) {
         Activity activity = this.cordova.getActivity();
         Boolean result = false;
         updateServiceIntent = new Intent(activity, LocationUpdateService.class);
@@ -95,20 +95,23 @@ public class BackgroundGpsPlugin extends CordovaPlugin {
         } else if (ACTION_CHANGE_PACE.equalsIgnoreCase(action)) {
             result = true;
             callbackContext.success();
+            
+            changePaceServiceIntent = new Intent('changePace', LocationUpdateService.class);
+            changePaceServiceIntent.putExtra("isMoving", data.getString(0));
+            activity.startService(changePaceServiceIntent);
         }
 
         return result;
     }
 
-    /**
-     * Override method in CordovaPlugin.
-     * Checks to see if it should turn off
-     */
-    public void onDestroy() {
-        Activity activity = this.cordova.getActivity();
+	/**
+	 * Override method in CordovaPlugin. Checks to see if it should turn off
+	 */
+	public void onDestroy() {
+		Activity activity = this.cordova.getActivity();
 
-        if(isEnabled && stopOnTerminate.equalsIgnoreCase("true")) {
-            activity.stopService(updateServiceIntent);
-        }
-    }
+		if (isEnabled && stopOnTerminate.equalsIgnoreCase("true")) {
+			activity.stopService(updateServiceIntent);
+		}
+	}
 }
