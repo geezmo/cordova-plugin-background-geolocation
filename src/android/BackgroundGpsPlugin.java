@@ -96,7 +96,7 @@ public class BackgroundGpsPlugin extends CordovaPlugin {
             result = true;
             callbackContext.success();
             
-            changePaceServiceIntent = new Intent('changePace', LocationUpdateService.class);
+            changePaceServiceIntent = new Intent("changePace", LocationUpdateService.class);
             changePaceServiceIntent.putExtra("isMoving", data.getString(0));
             activity.startService(changePaceServiceIntent);
         }
