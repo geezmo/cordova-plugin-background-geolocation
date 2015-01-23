@@ -178,14 +178,6 @@ public class LocationUpdateService extends Service implements LocationListener {
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		Log.i(TAG, "Received start id " + startId + ": " + intent);
 		if (intent != null) {
-			try {
-				params = new JSONObject(intent.getStringExtra("params"));
-				headers = new JSONObject(intent.getStringExtra("headers"));
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
 			if (intent.getStringExtra("isMoving") != null) {
 				this.setPace(Boolean.parseBoolean(intent
 						.getStringExtra("isMoving")));
@@ -193,6 +185,14 @@ public class LocationUpdateService extends Service implements LocationListener {
 						"- changePace: moving "
 								+ intent.getStringExtra("isMoving"));
 			} else {
+				try {
+					params = new JSONObject(intent.getStringExtra("params"));
+					headers = new JSONObject(intent.getStringExtra("headers"));
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
 				url = intent.getStringExtra("url");
 				stationaryRadius = Float.parseFloat(intent
 						.getStringExtra("stationaryRadius"));
