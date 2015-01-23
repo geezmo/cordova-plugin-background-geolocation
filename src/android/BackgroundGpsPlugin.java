@@ -21,7 +21,6 @@ public class BackgroundGpsPlugin extends CordovaPlugin {
 	public static final String ACTION_CHANGE_PACE = "onPaceChange";
 
 	private Intent updateServiceIntent;
-	private Intent changePaceIntent;
 
 	private Boolean isEnabled = false;
 
@@ -37,73 +36,82 @@ public class BackgroundGpsPlugin extends CordovaPlugin {
 	private String notificationText = "ENABLED";
 	private String stopOnTerminate = "false";
 
-	public boolean execute(String action, JSONArray data, CallbackContext callbackContext) {
-        Activity activity = this.cordova.getActivity();
-        Boolean result = false;
-        updateServiceIntent = new Intent(activity, LocationUpdateService.class);
+	public boolean execute(String action, JSONArray data,
+			CallbackContext callbackContext) {
+		Activity activity = this.cordova.getActivity();
+		Boolean result = false;
+		updateServiceIntent = new Intent(activity, LocationUpdateService.class);
 
-        if (ACTION_START.equalsIgnoreCase(action) && !isEnabled) {
-            result = true;
-            if (params == null || headers == null || url == null) {
-                callbackContext.error("Call configure before calling start");
-            } else {
-                callbackContext.success();
-                updateServiceIntent.putExtra("url", url);
-                updateServiceIntent.putExtra("params", params);
-                updateServiceIntent.putExtra("headers", headers);
-                updateServiceIntent.putExtra("stationaryRadius", stationaryRadius);
-                updateServiceIntent.putExtra("desiredAccuracy", desiredAccuracy);
-                updateServiceIntent.putExtra("distanceFilter", distanceFilter);
-                updateServiceIntent.putExtra("locationTimeout", locationTimeout);
-                updateServiceIntent.putExtra("desiredAccuracy", desiredAccuracy);
-                updateServiceIntent.putExtra("isDebugging", isDebugging);
-                updateServiceIntent.putExtra("notificationTitle", notificationTitle);
-                updateServiceIntent.putExtra("notificationText", notificationText);
-                updateServiceIntent.putExtra("stopOnTerminate", stopOnTerminate);
+		if (ACTION_START.equalsIgnoreCase(action) && !isEnabled) {
+			result = true;
+			if (params == null || headers == null || url == null) {
+				callbackContext.error("Call configure before calling start");
+			} else {
+				callbackContext.success();
+				updateServiceIntent.putExtra("url", url);
+				updateServiceIntent.putExtra("params", params);
+				updateServiceIntent.putExtra("headers", headers);
+				updateServiceIntent.putExtra("stationaryRadius",
+						stationaryRadius);
+				updateServiceIntent
+						.putExtra("desiredAccuracy", desiredAccuracy);
+				updateServiceIntent.putExtra("distanceFilter", distanceFilter);
+				updateServiceIntent
+						.putExtra("locationTimeout", locationTimeout);
+				updateServiceIntent
+						.putExtra("desiredAccuracy", desiredAccuracy);
+				updateServiceIntent.putExtra("isDebugging", isDebugging);
+				updateServiceIntent.putExtra("notificationTitle",
+						notificationTitle);
+				updateServiceIntent.putExtra("notificationText",
+						notificationText);
+				updateServiceIntent
+						.putExtra("stopOnTerminate", stopOnTerminate);
 
-                activity.startService(updateServiceIntent);
-                isEnabled = true;
-            }
-        } else if (ACTION_STOP.equalsIgnoreCase(action)) {
-            isEnabled = false;
-            result = true;
-            activity.stopService(updateServiceIntent);
-            callbackContext.success();
-        } else if (ACTION_CONFIGURE.equalsIgnoreCase(action)) {
-            result = true;
-            try {
-                // Params.
-                //    0       1       2           3               4                5               6            7           8                9               10              11
-                //[params, headers, url, stationaryRadius, distanceFilter, locationTimeout, desiredAccuracy, debug, notificationTitle, notificationText, activityType, stopOnTerminate]
-                this.params = data.getString(0);
-                this.headers = data.getString(1);
-                this.url = data.getString(2);
-                this.stationaryRadius = data.getString(3);
-                this.distanceFilter = data.getString(4);
-                this.locationTimeout = data.getString(5);
-                this.desiredAccuracy = data.getString(6);
-                this.isDebugging = data.getString(7);
-                this.notificationTitle = data.getString(8);
-                this.notificationText = data.getString(9);
-                this.stopOnTerminate = data.getString(11);
-            } catch (JSONException e) {
-                callbackContext.error("authToken/url required as parameters: " + e.getMessage());
-            }
-        } else if (ACTION_SET_CONFIG.equalsIgnoreCase(action)) {
-            result = true;
-            // TODO reconfigure Service
-            callbackContext.success();
-        } else if (ACTION_CHANGE_PACE.equalsIgnoreCase(action)) {
-            result = true;
-            callbackContext.success();
-            
-            changePaceServiceIntent = new Intent("changePace", LocationUpdateService.class);
-            changePaceServiceIntent.putExtra("isMoving", data.getString(0));
-            activity.startService(changePaceServiceIntent);
-        }
+				activity.startService(updateServiceIntent);
+				isEnabled = true;
+			}
+		} else if (ACTION_STOP.equalsIgnoreCase(action)) {
+			isEnabled = false;
+			result = true;
+			activity.stopService(updateServiceIntent);
+			callbackContext.success();
+		} else if (ACTION_CONFIGURE.equalsIgnoreCase(action)) {
+			result = true;
+			try {
+				// Params.
+				// 0 1 2 3 4 5 6 7 8 9 10 11
+				// [params, headers, url, stationaryRadius, distanceFilter,
+				// locationTimeout, desiredAccuracy, debug, notificationTitle,
+				// notificationText, activityType, stopOnTerminate]
+				this.params = data.getString(0);
+				this.headers = data.getString(1);
+				this.url = data.getString(2);
+				this.stationaryRadius = data.getString(3);
+				this.distanceFilter = data.getString(4);
+				this.locationTimeout = data.getString(5);
+				this.desiredAccuracy = data.getString(6);
+				this.isDebugging = data.getString(7);
+				this.notificationTitle = data.getString(8);
+				this.notificationText = data.getString(9);
+				this.stopOnTerminate = data.getString(11);
+			} catch (JSONException e) {
+				callbackContext.error("authToken/url required as parameters: "
+						+ e.getMessage());
+			}
+		} else if (ACTION_SET_CONFIG.equalsIgnoreCase(action)) {
+			result = true;
+			// TODO reconfigure Service
+			callbackContext.success();
+		} else if (ACTION_CHANGE_PACE.equalsIgnoreCase(action)) {
+			result = true;
+			callbackContext.success();
+			updateServiceIntent.putExtra("isMoving", data.getString(0));
+			activity.startService(updateServiceIntent);
+		}
 
-        return result;
-    }
+		return result;
+	}
 
 	/**
 	 * Override method in CordovaPlugin. Checks to see if it should turn off

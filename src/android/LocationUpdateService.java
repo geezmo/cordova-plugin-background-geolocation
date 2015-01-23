@@ -186,8 +186,12 @@ public class LocationUpdateService extends Service implements LocationListener {
 				e.printStackTrace();
 			}
 
-			if (intent.getAction().equals("changePace")) {
-				this.setPace(Boolean.parseBoolean("isMoving"));
+			if (intent.getStringExtra("isMoving") != null) {
+				this.setPace(Boolean.parseBoolean(intent
+						.getStringExtra("isMoving")));
+				Log.i(TAG,
+						"- changePace: moving "
+								+ intent.getStringExtra("isMoving"));
 			} else {
 				url = intent.getStringExtra("url");
 				stationaryRadius = Float.parseFloat(intent
@@ -238,11 +242,11 @@ public class LocationUpdateService extends Service implements LocationListener {
 				Log.i(TAG, "- isDebugging: " + isDebugging);
 				Log.i(TAG, "- notificationTitle: " + notificationTitle);
 				Log.i(TAG, "- notificationText: " + notificationText);
-
-				this.setPace(false);
 			}
 
 		}
+
+		this.setPace(false);
 
 		// We want this service to continue running until it is explicitly
 		// stopped
