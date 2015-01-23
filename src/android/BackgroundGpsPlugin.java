@@ -104,11 +104,16 @@ public class BackgroundGpsPlugin extends CordovaPlugin {
 			// TODO reconfigure Service
 			callbackContext.success();
 		} else if (ACTION_CHANGE_PACE.equalsIgnoreCase(action)) {
-			String isMoving = data.getString(0);
 			result = true;
-			callbackContext.success();
-			updateServiceIntent.putExtra("isMoving", isMoving);
-			activity.startService(updateServiceIntent);
+			try {
+				String isMoving = data.getString(0);
+				callbackContext.success();
+				updateServiceIntent.putExtra("isMoving", isMoving);
+				activity.startService(updateServiceIntent);
+			} catch (JSONException e) {
+				callbackContext.error("changePace input error: "
+						+ e.getMessage());
+			}
 		}
 
 		return result;
