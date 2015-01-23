@@ -242,11 +242,12 @@ public class LocationUpdateService extends Service implements LocationListener {
 				Log.i(TAG, "- isDebugging: " + isDebugging);
 				Log.i(TAG, "- notificationTitle: " + notificationTitle);
 				Log.i(TAG, "- notificationText: " + notificationText);
+				
+				this.setPace(false);
 			}
 
 		}
 
-		this.setPace(false);
 
 		// We want this service to continue running until it is explicitly
 		// stopped
